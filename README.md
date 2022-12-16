@@ -8,7 +8,9 @@ This is an R package that tests your data for normality!
 
 ### Website
 Where the original R package came from can be found [here](https://github.com/UBC-MDS/noRmtest)
-Deployed website can be found [here]()
+
+Deployed website can be found [here](https://jhu-statprogramming-fall-2022.github.io/biostat840-project3-pkgdown-YangzhenyuGao/)
+
 5 things I customized in my pkgdown website:
 (1)Change the bootswatch theme; (2)Change the color of page background; (3)Change the text color; 
 (4)Override the default fonts used for the majority of the text, for headings and for code;
