@@ -1,0 +1,39 @@
+Package: noRmtest
+Title: This is an R package that tests your data for normality!
+Version: 0.0.0.9000
+Authors@R: c(
+    person(given = "Constantin",
+           family = "Shuster",
+           role = c("aut", "cre"),
+           email = "first.last@example.com"),
+    person(given = "Sylvia",
+           family = "Lee",
+           role = c("aut"),
+           email = "sylvia199619lee@gmail.com"),
+    person(given = "Richie",
+           family = "Zitomer",
+           role = c("aut"),
+           email = "first.last@example.com"))
+Description: This package will test your data for normality using a graphical and a statistical method. 
+  As a graphical method, quantile-quantile plots (Q-Q plot) will be constructed in order for you to visualize 
+  whether the data closely approximates a straight line - thereby indicating it is normally distributed. As a 
+  statistical method, the Shapiro-Wilk test score will be calculated along with the corresponding p-value. The 
+  Shapiro-Wilk test provides better power than most other statistical normality tests as long as **most of the 
+  values are unique** This package will also derive the parameters that would fit your data to a normal 
+  distribution using maximum likelihood estimation.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Suggests: 
+    testthat,
+    covr
+Imports: 
+    ggplot2,
+    tidyverse,
+    nlme,
+    stats,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+

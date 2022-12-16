@@ -1,0 +1,12 @@
+^Meta$
+^doc$
+^LICENSE\.md$
+^noRmtest\.Rproj$
+^\.Rproj\.user$
+CONDUCT.md
+CONTRIBUTING.md
+img
+.travis.yml
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

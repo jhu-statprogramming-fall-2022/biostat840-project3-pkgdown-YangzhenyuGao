@@ -1,0 +1,19 @@
+url: ~
+template:
+  bootstrap: 5
+  bootswatch: materia
+  bslib:
+    bg: "#fffafa"
+    fg: "#082567"
+    primary: "#306cc9"
+    base_font: {google: "Roboto"}
+    heading_font: {google: "Roboto Slab"}
+    code_font: {google: "JetBrains Mono"}
+    code-bg: "#2b2b2b"
+  theme: breeze-light
+navbar:
+  bg: light
+  structure:
+    left:  [search]
+    right: [reference, articles]
+
