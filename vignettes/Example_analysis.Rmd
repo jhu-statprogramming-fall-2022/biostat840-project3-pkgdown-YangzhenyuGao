@@ -1,0 +1,137 @@
+---
+title: "Normality Testing in R"
+author: "Richie Zitomer, Sylvia Lee, Constantin Shuster"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set()
+```
+
+
+```{r echo=TRUE}
+#Question: What makes a good horror movie? 
+#This is the database of horror movies from IMDB by way of Kaggle, which contains several information about them such as movie_rating and review_rating.
+#The dictionary of the data is shown here (The data also comes from here): https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-22
+
+library(tidyverse)
+library(noRmtest)
+library(here)
+library(lubridate)
+if(!file.exists(here("data","horror.RDS"))){
+  horror <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-22/horror_movies.csv')
+  walk(.x = horror,
+                  .f = ~saveRDS(.x, 
+                    file = "C:/Users/Lenovo/Desktop/noRmtest-master/noRmtest-master/data/horror.RDS"))
+}
+
+horror <- readRDS(here("data","horror.RDS"))
+horror <- compact(horror)
+
+```
+
+```{r echo=TRUE}
+#shapiro-wilks test for normality for each continuous variable in the data.
+#Get the mean and variance for the empirical distribution of the data given that the data is normal for each continuous variable in the data.
+horror_part1 <- horror %>%
+  select(review_rating,movie_run_time) %>%
+  drop_na()
+horror_part1$movie_run_time <- str_replace(horror_part1$movie_run_time,'min','')
+horror_part1$movie_run_time <- as.double(horror_part1$movie_run_time)
+
+shapiro_wilk(horror_part1)
+params_mle(horror_part1)
+```
+
+```{r echo=TRUE}
+library(ggpubr)
+horror_part1 %>%
+  ggplot(aes(x = movie_run_time, y = review_rating)) +
+  geom_point() +
+  stat_cor(method="pearson") +
+  labs(x = "Run time of movie", y = "The rating of movie", 
+       title = "Point Plot of run time of movies and the rating", 
+       subtitle = "We don't see a great correlation here.",
+       caption = "Credit to: Yangzhenyu Gao") +
+  theme(plot.title = element_text(color = "dark blue", hjust = 0.5),
+        plot.caption = element_text(color ="blue"),
+        plot.subtitle = element_text(color = "blue"))
+  
+```
+
+```{r echo=TRUE}
+horror$language <- as.factor(horror$language)
+
+horror %>%
+  select(language,review_rating) %>%
+  drop_na() %>%
+  group_by(language) %>%
+  summarise(number_of_reviews = n()) %>%
+  filter(number_of_reviews >= 30) %>%
+  arrange(desc(number_of_reviews))
+
+horror %>%
+  select(language,review_rating) %>%
+  drop_na() %>%
+  filter(language == "English" | language == "Spanish" | 
+         language == "Japanese"| language == "Filipino|Tagalog" |
+        language == "Hindi"| language == "Thai") %>%
+  ggplot(aes(x = language, y = review_rating, fill = language)) +
+  geom_violin() + 
+  labs(x = "Type of language", y = "The rating of movie", 
+       title = "Violin Plot of language of movies and the rating", 
+       subtitle = "Horror movies in Thai and Janpanese have better rating",
+       caption = "Credit to: Yangzhenyu Gao") +
+  theme(plot.title = element_text(color = "dark blue", hjust = 0.5),
+        plot.caption = element_text(color ="blue"),
+        plot.subtitle = element_text(color = "blue"))
+
+```
+
+```{r echo=TRUE}
+horror_part2 <- horror %>%
+  select(review_rating,movie_run_time,release_country) %>%
+  drop_na()
+horror_part2$movie_run_time <- str_replace(horror_part2$movie_run_time,'min','')
+horror_part2$movie_run_time <- as.double(horror_part2$movie_run_time)
+
+horror_part2$release_country <- as.factor(horror_part2$release_country)
+
+horror %>%
+  select(release_country,review_rating) %>%
+  drop_na() %>%
+  group_by(release_country) %>%
+  summarise(number_of_reviews = n()) %>%
+  filter(number_of_reviews >= 90) %>%
+  arrange(desc(number_of_reviews))
+
+horror_part2 %>%
+  drop_na() %>%
+  filter(release_country == "USA" | release_country == "UK" | 
+         release_country == "Japan"| release_country == "India") %>%
+  ggplot(aes(x = movie_run_time, y = review_rating)) +
+  geom_line() + 
+  facet_grid(rows=vars(release_country)) +
+  labs(x = "Run time of movie", y = "The rating of movie", 
+       title = "Line Plot of run time of movies and the rating in different released country", 
+       subtitle = "Horror movies in USA with around 100 mins have better rating",
+       caption = "Credit to: Yangzhenyu Gao") +
+  theme(plot.title = element_text(color = "dark blue", hjust = 0.5),
+        plot.caption = element_text(color ="blue"),
+        plot.subtitle = element_text(color = "blue"))
+```
+
+
+Based on the results shown above, we can find out that the factors that determine a good horror movie is quite complex. It shows that the time of movie does not have a form relationship with the rating of movie, no matter in general or in specific released country. As for the language, the movie with Japanese and Thai could have a better rating. 
+
+At least six different functions from dplyr, tidyr, lubridate, stringr, or forcats: (1)summarise,(2)drop_na,(3)select,(4)group_by,(5)filter,(6)arrange
+
+At least three different geom() functions from ggplot2: (1)geom_violin,(2)geom_boxplot,(3)geom_point
+
+At least two functions from purrr: (1)walk,(2)compact
+
